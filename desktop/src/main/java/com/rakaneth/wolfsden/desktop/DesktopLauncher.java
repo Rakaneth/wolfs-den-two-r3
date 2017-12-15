@@ -17,7 +17,7 @@ public class DesktopLauncher {
 
     private static LwjglApplicationConfiguration getDefaultConfiguration() {
         LwjglApplicationConfiguration configuration = new LwjglApplicationConfiguration();
-        configuration.title = "Wolf's Den II v.0.3.3";
+        configuration.title = "Wolf's Den II v.0.3.5";
         configuration.width = 120 * 12;
         configuration.height = 40 * 18;
         for (int size : new int[] { 128, 64, 32, 16 }) {
