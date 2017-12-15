@@ -1,4 +1,4 @@
-# Wolf's Den Two v. 0.3.5
+# Wolf's Den Two v. 0.3.6
 
 This is the third revision of Wolf's Den II, a roguelike built using the following libraries:
 

@@ -35,7 +35,6 @@ public class PlayScreen extends WolfScreen {
   private final int        fullW    = 120;
   private final int        fullH    = 40;
   public static PlayScreen instance = new PlayScreen();
-  
 
   private PlayScreen() {
     super("title");
@@ -72,7 +71,7 @@ public class PlayScreen extends WolfScreen {
     stage.addActor(skills);
 
     input = new SquidInput((char key, boolean alt, boolean ctrl, boolean shift) -> {
-      
+
     });
     setInput();
   }
@@ -99,7 +98,6 @@ public class PlayScreen extends WolfScreen {
     WolfUtils.log("Dice", "Roll of step %d (%s): %d", step, StepDice.getDiceRoll(step), StepDice.roll(step));
   }
 
-
   private void testSuxRate(int step, int diff) {
     int sux = 0;
     for (int i = 0; i < 1000; i++) {
@@ -109,7 +107,6 @@ public class PlayScreen extends WolfScreen {
     WolfUtils.log("Dice", "1000 rolls of step %d (%s) vs. diff %d : %d%%", step, StepDice.getDiceRoll(step), diff,
                   sux / 10);
   }
-  
 
   public void drawPanel(int x, int y, String whichPanel, IColoredString<Color> ics) {
     SquidPanel thePanel = null;
@@ -185,7 +182,8 @@ public class PlayScreen extends WolfScreen {
   public int gridHeight() {
     return mapH;
   }
-  
+
+  @Override
   public void enter() {
     super.enter();
   }

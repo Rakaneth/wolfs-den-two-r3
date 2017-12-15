@@ -2,7 +2,6 @@ package com.rakaneth.wolfsden.entities;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ai.btree.utils.BehaviorTreeLibraryManager;
@@ -15,62 +14,62 @@ import squidpony.squidgrid.FOV;
 import squidpony.squidmath.Coord;
 
 public class CreatureManager {
-  private static final String            fileName = "data/creatures.js";
-  private HashMap<String, CreatureBase>  creatureBases;
-  private HashMap<String, Creature> creatures = new HashMap<>();
-  private Creature foetus;
-  private int counter = 1;
-  private MapBuilder mb = MapBuilder.instance;
-  private BehaviorTreeLibraryManager btm = BehaviorTreeLibraryManager.getInstance();
-  public static final CreatureManager instance = new CreatureManager();
-  
+  private static final String           fileName  = "data/creatures.js";
+  private HashMap<String, CreatureBase> creatureBases;
+  private HashMap<String, Creature>     creatures = new HashMap<>();
+  private Creature                      foetus;
+  private int                           counter   = 1;
+  private MapBuilder                    mb        = MapBuilder.instance;
+  private BehaviorTreeLibraryManager    btm       = BehaviorTreeLibraryManager.getInstance();
+  public static final CreatureManager   instance  = new CreatureManager();
+
   @SuppressWarnings("unchecked")
   private CreatureManager() {
     Json converter = new Json();
     creatureBases = converter.fromJson(HashMap.class, CreatureBase.class, Gdx.files.internal(fileName));
   }
-  
+
   public CreatureManager start() {
     foetus = new Creature();
     return this;
   }
-  
+
   public CreatureManager setID(String id) {
     foetus.id = id + String.valueOf(counter);
     return this;
   }
-  
+
   public CreatureManager setDesc(String desc) {
     foetus.desc = desc;
     return this;
   }
-  
+
   public CreatureManager setName(String name) {
     foetus.name = name;
     return this;
   }
-  
+
   public CreatureManager setPos(int x, int y) {
     foetus.x = x;
     foetus.y = y;
     return this;
   }
-  
+
   public CreatureManager setMapID(String mapID) {
     foetus.mapID = mapID;
     return this;
   }
-  
+
   public CreatureManager setGlyph(char glyph) {
     foetus.glyph = glyph;
     return this;
   }
-  
+
   public CreatureManager setColor(String color) {
     foetus.color = color;
     return this;
   }
-  
+
   public CreatureManager setStats(int str, int stam, int spd, int skl) {
     foetus.str = str;
     foetus.stam = stam;
@@ -78,17 +77,17 @@ public class CreatureManager {
     foetus.skl = skl;
     return this;
   }
-  
+
   public CreatureManager setVision(double vision) {
     foetus.vision = vision;
     return this;
   }
-  
+
   public CreatureManager setBTree(String btree) {
     foetus.bPath = "data/ai/" + btree + ".tree";
     return this;
   }
-  
+
   public Creature build() {
     WolfMap map = foetus.map();
     foetus.visible = new double[map.getWidth()][map.getHeight()];
@@ -103,7 +102,7 @@ public class CreatureManager {
     counter++;
     return foetus;
   }
-  
+
   public Creature build(String id, String mapID, Coord _start) {
     CreatureBase base = creatureBases.get(id);
     if (base == null) {
@@ -113,23 +112,24 @@ public class CreatureManager {
     String name = WolfUtils.ifNull(base.name, "No Name");
     String desc = WolfUtils.ifNull(base.desc, "No Desc");
     String ai = WolfUtils.ifNull(base.ai, "hunt");
-    Coord start = WolfUtils.ifNull(_start, mb.getMap(mapID).getEmpty());
+    Coord start = WolfUtils.ifNull(_start, mb.getMap(mapID)
+                                             .getEmpty());
     Creature newCreature = this.start()
-        .setID(id)
-        .setName(name)
-        .setDesc(desc)
-        .setPos(start.x, start.y)
-        .setMapID(mapID)
-        .setColor(base.color)
-        .setGlyph(base.glyph)
-        .setVision(base.vision)
-        .setStats(base.str, base.stam, base.spd, base.skl)
-        .setBTree(ai)
-        .build();
+                               .setID(id)
+                               .setName(name)
+                               .setDesc(desc)
+                               .setPos(start.x, start.y)
+                               .setMapID(mapID)
+                               .setColor(base.color)
+                               .setGlyph(base.glyph)
+                               .setVision(base.vision)
+                               .setStats(base.str, base.stam, base.spd, base.skl)
+                               .setBTree(ai)
+                               .build();
     creatures.put(id, newCreature);
     return newCreature;
   }
-  
+
   public Creature buildPlayer(String classID, String mapID) {
     Creature newPlayer = build(classID, mapID, null);
     newPlayer.btree = null;
@@ -137,7 +137,7 @@ public class CreatureManager {
     creatures.put("player", newPlayer);
     return newPlayer;
   }
-  
+
   private static class CreatureBase {
     public String            name;
     public int               str;
