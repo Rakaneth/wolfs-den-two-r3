@@ -1,0 +1,16 @@
+#Lackey tree
+
+#Aliases
+import waitForLeader: "com.rakaneth.wolfsden.ai.tasks.WaitTask"
+import detectPrey?: "com.rakaneth.wolfsden.ai.conditions.DetectPreyCondition"
+import getTarget: "com.rakaneth.wolfsden.ai.tasks.GetTargetTask"
+import followLeader: "com.rakaneth.wolfsden.ai.tasks.FollowLeaderTask"
+import leaderNear?: "com.rakaneth.wolfsden.ai.conditions.CanSeeLeaderCondition"
+
+#tree definition
+root
+	dynamicGuardSelector
+		(include subtree: "data/ai/common/preyExists.tree" lazy:true) include subtree: "data/ai/common/huntPrey.tree" lazy:true
+		(detectPrey?) getTarget
+		(leaderNear?) followLeader 
+		() waitForLeader

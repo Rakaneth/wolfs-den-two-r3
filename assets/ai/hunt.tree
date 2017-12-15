@@ -1,0 +1,34 @@
+#Generic badguy tree
+
+#Aliases
+import randomWalk: "com.rakaneth.wolfsden.ai.tasks.RandomWalkTask"
+import detectPrey?: "com.rakaneth.wolfsden.ai.conditions.DetectPreyCondition"
+import getTarget: "com.rakaneth.wolfsden.ai.tasks.GetTargetTask"
+import moveTowardsPrey: "com.rakaneth.wolfsden.ai.tasks.MoveTowardsPreyTask"
+import preyAdjacent?: "com.rakaneth.wolfsden.ai.conditions.PreyAdjacentCondition"
+import attackPrey: "com.rakaneth.wolfsden.ai.tasks.AttackPreyTask"
+import preyNull?: "com.rakaneth.wolfsden.ai.conditions.PreyNullCondition"
+import preyAlive?: "com.rakaneth.wolfsden.ai.conditions.PreyAliveCondition"
+import preySameLevel?: "com.rakaneth.wolfsden.ai.conditions.PreySameLevelCondition"
+
+#Check for prey existence
+subtree name: "preyExists?"
+	sequence
+		invert
+			preyNull?
+		preySameLevel?
+		preyAlive?
+
+#Hunting a target
+subtree name: "huntPrey"
+	selector
+		(preyAdjacent?) attackPrey
+		moveTowardsPrey
+
+
+#tree definition
+root
+	dynamicGuardSelector
+		($preyExists?) $huntPrey
+		(detectPrey?) getTarget
+		() randomWalk

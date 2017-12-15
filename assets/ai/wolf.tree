@@ -1,0 +1,18 @@
+#Wolf tree
+
+#Aliases
+import randomWalk: "com.rakaneth.wolfsden.ai.tasks.RandomWalkTask"
+import detectPrey?: "com.rakaneth.wolfsden.ai.conditions.DetectPreyCondition"
+import getTarget: "com.rakaneth.wolfsden.ai.tasks.GetTargetTask"
+import detectFood?: "com.rakaneth.wolfsden.ai.conditions.DetectFoodCondition"
+import followLeader: "com.rakaneth.wolfsden.ai.tasks.FollowLeaderTask"
+import leaderNear?: "com.rakaneth.wolfsden.ai.conditions.CanSeeLeaderCondition"
+
+#tree definition
+root
+	dynamicGuardSelector
+		(include subtree: "data/ai/common/preyExists.tree" lazy:true) include subtree: "data/ai/common/huntPrey.tree" lazy:true
+		(detectPrey?) getTarget
+		(detectFood?) include subtree: "data/ai/common/lookForFood.tree" lazy:true
+		(leaderNear?) followLeader
+		() randomWalk

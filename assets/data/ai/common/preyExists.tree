@@ -1,0 +1,9 @@
+import canSeePrey?: "com.rakaneth.wolfsden.ai.conditions.CanSeePreyCondition"
+import preyAlive?: "com.rakaneth.wolfsden.ai.conditions.PreyAliveCondition"
+
+
+#Check for prey existence
+root
+	sequence
+		preyAlive?
+		canSeePrey?

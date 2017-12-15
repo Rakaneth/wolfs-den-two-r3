@@ -60,7 +60,7 @@ public abstract class WolfScreen {
   protected void setInput() {
     Gdx.input.setInputProcessor(new InputMultiplexer(stage, input));
   }
-
+  
   abstract public void render();
 
   abstract public void resize(int width, int height);
