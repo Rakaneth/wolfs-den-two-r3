@@ -192,6 +192,7 @@ public class PlayScreen extends WolfScreen {
   public void render() {
     if (input.hasNext())
       input.next();
+    drawHUDSkeleton();
     stage.getViewport()
          .apply(false);
     stage.act();
