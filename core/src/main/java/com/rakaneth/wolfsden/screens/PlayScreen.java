@@ -59,7 +59,6 @@ public class PlayScreen extends WolfScreen {
 
     display = new SparseLayers(mapW, mapH, cellWidth, cellHeight, slab.copy());
     display.setBounds(0, pixelHeight(msgH), pixelWidth(mapW), pixelHeight(mapH));
-
     stage.addActor(display);
 
     messages = new SquidMessageBox(msgW, msgH, slab.copy());
@@ -81,9 +80,11 @@ public class PlayScreen extends WolfScreen {
     skills = new SquidPanel(skW, skH, slab.copy());
     skills.setBounds(pixelWidth(mapW), pixelHeight(infoH), pixelWidth(skW), pixelHeight(skH));
     stage.addActor(skills);
-
+    
     input = new SquidInput((char key, boolean alt, boolean ctrl, boolean shift) -> {
+      switch(key) {
 
+      }
     });
     setInput();
   }
@@ -119,6 +120,7 @@ public class PlayScreen extends WolfScreen {
     WolfUtils.log("Dice", "1000 rolls of step %d (%s) vs. diff %d : %d%%", step, StepDice.getDiceRoll(step), diff,
                   sux / 10);
   }
+  
 
   public void drawPanel(int x, int y, String whichPanel, IColoredString<Color> ics) {
     SquidPanel thePanel = null;
