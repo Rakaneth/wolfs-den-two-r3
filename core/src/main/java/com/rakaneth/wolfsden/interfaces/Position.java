@@ -11,10 +11,8 @@ public interface Position {
   int Y();
 
   String mapID();
-
-  default Coord getPos() {
-    return Coord.get(X(), Y());
-  }
+  
+  Coord getPos();
 
   default WolfMap map() {
     return MapBuilder.instance.getMap(mapID());

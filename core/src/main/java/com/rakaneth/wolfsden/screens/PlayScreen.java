@@ -1,10 +1,20 @@
 package com.rakaneth.wolfsden.screens;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
+import com.rakaneth.wolfsden.GameInfo;
+import com.rakaneth.wolfsden.MapBuilder;
 import com.rakaneth.wolfsden.StepDice;
+import com.rakaneth.wolfsden.WolfMap;
 import com.rakaneth.wolfsden.WolfUtils;
+import com.rakaneth.wolfsden.entities.Creature;
+import com.rakaneth.wolfsden.entities.CreatureManager;
+import com.rakaneth.wolfsden.interfaces.Drawable;
 
 import squidpony.panel.IColoredString;
 import squidpony.squidgrid.gui.gdx.DefaultResources;
@@ -15,37 +25,39 @@ import squidpony.squidgrid.gui.gdx.SquidInput;
 import squidpony.squidgrid.gui.gdx.SquidMessageBox;
 import squidpony.squidgrid.gui.gdx.SquidPanel;
 import squidpony.squidgrid.gui.gdx.TextCellFactory;
+import squidpony.squidmath.Coord;
 
 public class PlayScreen extends WolfScreen {
-  private SparseLayers     display;
-  private SquidMessageBox  messages;
-  private SquidPanel       stats, info, equipment, skills;
-  private final int        mapW     = 80;
-  private final int        mapH     = 30;
-  private final int        msgW     = 43;
-  private final int        msgH     = 10;
-  private final int        statW    = 37;
-  private final int        statH    = 10;
-  private final int        infoW    = 40;
-  private final int        infoH    = 10;
-  private final int        equipW   = 40;
-  private final int        equipH   = 6;
-  private final int        skW      = 40;
-  private final int        skH      = 24;
-  private final int        fullW    = 120;
-  private final int        fullH    = 40;
-  public static PlayScreen instance = new PlayScreen();
+  private SparseLayers          display;
+  private SquidMessageBox       messages;
+  private SquidPanel            stats, info, equipment, skills;
+  private final int             mapW     = 80;
+  private final int             mapH     = 30;
+  private final int             msgW     = 43;
+  private final int             msgH     = 10;
+  private final int             statW    = 37;
+  private final int             statH    = 10;
+  private final int             infoW    = 40;
+  private final int             infoH    = 10;
+  private final int             equipW   = 40;
+  private final int             equipH   = 6;
+  private final int             skW      = 40;
+  private final int             skH      = 24;
+  private final int             fullW    = 120;
+  private final int             fullH    = 40;
+  private final GameInfo        gi       = GameInfo.instance;
+  private final CreatureManager cm       = CreatureManager.instance;
+  private final MapBuilder      mb       = MapBuilder.instance;
+  public static PlayScreen      instance = new PlayScreen();
 
   private PlayScreen() {
     super("title");
     vport = new StretchViewport(pixelWidth(fullW), pixelHeight(fullH));
     stage = new Stage(vport, batch);
     TextCellFactory slab = DefaultResources.getSlabFamily();
-    TextCellFactory stretch = DefaultResources.getStretchableSquareFont();
     initText(slab);
-    initText(stretch);
 
-    display = new SparseLayers(mapW, mapH, cellWidth, cellHeight, stretch.copy());
+    display = new SparseLayers(mapW, mapH, cellWidth, cellHeight, slab.copy());
     display.setBounds(0, pixelHeight(msgH), pixelWidth(mapW), pixelHeight(mapH));
 
     stage.addActor(display);
@@ -139,6 +151,50 @@ public class PlayScreen extends WolfScreen {
     display.put(x, y, c, color);
   }
 
+  public Coord cam() {
+    Coord pos = gi.player()
+                  .getPos();
+    int left = MathUtils.clamp(pos.x - mapW / 2, 0, Math.max(0, gi.getMap()
+                                                                  .getWidth()
+                                                                - mapW));
+    int top = MathUtils.clamp(pos.y - mapH / 2, 0, Math.max(0, gi.getMap()
+                                                                 .getHeight()
+                                                               - mapH));
+    return Coord.get(left, top);
+  }
+
+  public void renderMap() {
+    WolfMap map = gi.getMap();
+    char[][] toDraw = map.displayMap;
+    Coord cam = cam();
+    int wx, wy;
+    for (int x = 0; x < mapW; x++) {
+      for (int y = 0; y < mapH; y++) {
+        wx = cam.x + x;
+        wy = cam.y + y;
+        if (map.isOOB(wx, wy)) {
+          drawMap(x, y, ' ', SColor.BLACK_DYE);
+        } else {
+          drawMap(x, y, toDraw[wx][wy], map.fgFloats[wx][wy], map.bgFloats[wx][wy]);
+        }
+      }
+    }
+  }
+
+  public void renderThings() {
+    Coord cam = cam();
+    List<Drawable> things = CreatureManager.instance.allCreatures()
+                                                    .stream()
+                                                    .filter(f -> f.map() == gi.getMap())
+                                                    .map(f -> (Drawable) f)
+                                                    .collect(Collectors.toList());
+
+    for (Drawable thing : things) {
+      Coord tPos = thing.getPos();
+      drawMap(tPos.x - cam.x, tPos.y - cam.y, thing.glyph(), thing.color());
+    }
+  }
+
   public void clearMap() {
     display.clear();
   }
@@ -186,13 +242,18 @@ public class PlayScreen extends WolfScreen {
   @Override
   public void enter() {
     super.enter();
+    gi.setMap(mb.getMap("wolfDen1"));
+    cm.buildPlayer("fighter", gi.getMap());
   }
 
   @Override
   public void render() {
+    drawHUDSkeleton();
+    clearMap();
+    renderMap();
+    renderThings();
     if (input.hasNext())
       input.next();
-    drawHUDSkeleton();
     stage.getViewport()
          .apply(false);
     stage.act();

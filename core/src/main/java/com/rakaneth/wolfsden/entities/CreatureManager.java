@@ -1,11 +1,13 @@
 package com.rakaneth.wolfsden.entities;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ai.btree.utils.BehaviorTreeLibraryManager;
 import com.badlogic.gdx.utils.Json;
+import com.rakaneth.wolfsden.GameInfo;
 import com.rakaneth.wolfsden.MapBuilder;
 import com.rakaneth.wolfsden.WolfMap;
 import com.rakaneth.wolfsden.WolfUtils;
@@ -84,7 +86,7 @@ public class CreatureManager {
   }
 
   public CreatureManager setBTree(String btree) {
-    foetus.bPath = "data/ai/" + btree + ".tree";
+    foetus.bPath = "ai/" + btree + ".tree";
     return this;
   }
 
@@ -98,7 +100,7 @@ public class CreatureManager {
     foetus.totXP = 0;
     foetus.heal();
     foetus.refresh();
-    foetus.btree = btm.createBehaviorTree(foetus.bPath, foetus);
+    //foetus.btree = btm.createBehaviorTree(foetus.bPath, foetus);
     counter++;
     return foetus;
   }
@@ -134,8 +136,22 @@ public class CreatureManager {
     Creature newPlayer = build(classID, mapID, null);
     newPlayer.btree = null;
     creatures.remove(newPlayer.id);
+    newPlayer.id = "player";
     creatures.put("player", newPlayer);
+    GameInfo.instance.setPlayer(newPlayer);
     return newPlayer;
+  }
+  
+  public void buildPlayer(String classID, WolfMap map) {
+    buildPlayer(classID, map.id);
+  }
+  
+  public Creature getByID(String id) {
+    return creatures.get(id);
+  }
+  
+  public Collection<Creature> allCreatures() {
+    return creatures.values();
   }
 
   private static class CreatureBase {
@@ -155,4 +171,6 @@ public class CreatureManager {
     public String            ai;
     public double            vision;
   }
+
+
 }

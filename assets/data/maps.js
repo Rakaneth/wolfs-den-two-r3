@@ -1,7 +1,7 @@
 {
 	wolfDen1: {
-		width: 31,
-		height: 31,
+		width: 45,
+		height: 45,
 		dark: true,
 		down: "wolfDen2",
 		name: "Wolf's Den-1",

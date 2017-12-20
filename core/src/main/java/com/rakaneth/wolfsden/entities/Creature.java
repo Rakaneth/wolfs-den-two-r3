@@ -5,6 +5,8 @@ import com.badlogic.gdx.math.MathUtils;
 import com.rakaneth.wolfsden.interfaces.Drawable;
 import com.rakaneth.wolfsden.interfaces.Position;
 
+import squidpony.squidmath.Coord;
+
 public class Creature implements Drawable, Position {
   // ID
   String                 id;
@@ -95,6 +97,11 @@ public class Creature implements Drawable, Position {
   @Override
   public String name() {
     return name;
+  }
+
+  @Override
+  public Coord getPos() {
+    return Coord.get(x, y);
   }
 
 }
