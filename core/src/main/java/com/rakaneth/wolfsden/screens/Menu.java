@@ -65,6 +65,10 @@ public class Menu extends SquidPanel {
   public void add(IColoredString<Color> item) {
     items.add(item);
   }
+  
+  public void remove(IColoredString<Color> item) {
+    items.remove(item);
+  }
 
   public void remove(int index) {
     items.remove(index);
